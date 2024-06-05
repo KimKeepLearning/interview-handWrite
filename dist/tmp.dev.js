@@ -362,16 +362,6 @@ function mynew(constructor) {
   var res = constructor.apply.apply(constructor, [newObj].concat(args));
   return _typeof(res) === 'object' ? res : newObj;
 }
-/**
- * 2024-6-4:  4, 5, 7 -------接近2h
- */
-
-/**
- * 2024-6-5: 
- *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
- *  4
- */
-
 
 var curry = function curry(func) {
   var prevArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -390,3 +380,12 @@ var curry = function curry(func) {
     return curry(func, curArgs);
   };
 };
+/**
+ * 2024-6-4:  4, 5, 7 -------接近2h
+ */
+
+/**
+ * 2024-6-5: 
+ *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
+ *  4
+ */

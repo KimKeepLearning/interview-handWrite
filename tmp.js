@@ -283,17 +283,6 @@ function mynew(constructor, ...args) {
   const res = constructor.apply(newObj, ...args);
   return typeof res === 'object' ? res : newObj;
 }
-
-/**
- * 2024-6-4:  4, 5, 7 -------接近2h
- */
-
-/**
- * 2024-6-5: 
- *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
- *  4
- */
-
 const curry = (func, prevArgs = []) => {
   const len = func.length;
   return (...nextArgs) => {
@@ -304,3 +293,13 @@ const curry = (func, prevArgs = []) => {
     return curry(func, curArgs);
   }
 }
+/**
+ * 2024-6-4:  4, 5, 7 -------接近2h
+ */
+
+/**
+ * 2024-6-5: 
+ *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
+ *  4
+ */
+
