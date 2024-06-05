@@ -161,17 +161,12 @@ class MyPromise {
       }
       const resolveNewPromise = value => {
         try {
-          if (typeof onFULFILLED !== 'function') {
-            resolveNext(value);
+          const res = onFULFILLED(value);
+          // 当执行结果返回的是一个promise实例，等待这个promise状态改变后再改变then返回的promise的状态
+          if (res instanceof MyPromise) {
+            res.then(resolveNext, rejectNext);
           } else {
-            // 获取then函数回调的执行结果
-            const res = onFULFILLED(value);
-            // 当执行结果返回的是一个promise实例，等待这个promise状态改变后再改变then返回的promise的状态
-            if (res instanceof MyPromise) {
-              res.then(resolveNext, rejectNext);
-            } else {
-              resolveNext(res)
-            }
+            resolveNext(res)
           }
         } catch (error) {
           rejectNext(error);

@@ -1,6 +1,6 @@
 "use strict";
 
-var _this = void 0;
+var _this2 = void 0;
 
 function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -16,137 +16,237 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var debounce = function debounce(func, wait) {
-  var timer = 0;
-  return function () {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+var ajax = function ajax(url, method, paramString) {
+  var xhr = new XMLHttpRequest();
+  xhr.open(method, url);
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status >= 200 && xhr.status < 300) {//
+      }
     }
-
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(function () {
-      func.apply(void 0, args);
-    }, wait);
-  };
-};
-
-var instanceOf = function instanceOf(instance, classOrFunc) {
-  if (_typeof(instance) !== 'object' || typeof instance === null) {
-    return false;
-  }
-
-  var proto = Object.getPrototypeOf(instance);
-
-  while (proto) {
-    if (proto === classOrFunc.prototype) {
-      return true;
-    }
-
-    proto = Object.getPrototypeOf(proto);
-  }
-
-  return false;
-};
-
-var myNew = function myNew(constructor) {
-  var obj = Object.create(constructor.prototype);
-
-  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-    args[_key2 - 1] = arguments[_key2];
-  }
-
-  var res = constructor.apply(obj, args);
-  return _typeof(res) === 'object' ? res : obj;
-};
-
-var call = function call() {
-  var _context;
-
-  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
-
-  if (_typeof(context) !== 'object') {
-    context = new Object(context);
-  }
-
-  var key = Symbol();
-  context[key] = _this;
-
-  for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-    args[_key3 - 1] = arguments[_key3];
-  }
-
-  var res = (_context = context)[key].apply(_context, args);
-
-  delete context[key];
-  return res;
-};
-
-var apply = function apply() {
-  var _context2;
-
-  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
-  var args = arguments.length > 1 ? arguments[1] : undefined;
-
-  if (_typeof(context) !== 'object') {
-    context = new Object(context);
-  }
-
-  var key = Symbol();
-  context[key] = _this;
-
-  var res = (_context2 = context)[key].apply(_context2, _toConsumableArray(args));
-
-  delete context[key];
-  return res;
-};
-
-Function.prototype.myBind = function () {
-  var _this2 = this;
-
-  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
-
-  for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
-    args[_key4 - 1] = arguments[_key4];
-  }
-
-  var self = this;
-
-  var fBound = function fBound() {
-    for (var _len5 = arguments.length, innerArgs = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-      innerArgs[_key5] = arguments[_key5];
-    }
-
-    self.apply(_this2 instanceof fBound ? _this2 : context, args.concat(args, innerArgs));
   };
 
-  fBound.prototype = Object.create(this.prototype);
-  return fBound;
+  xhr.send(paramString);
 };
 
-Function.prototype.myBind2 = function () {
-  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
+var ajaxPromise = function ajaxPromise(url, method, paramString) {
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url);
 
-  for (var _len6 = arguments.length, args = new Array(_len6 > 1 ? _len6 - 1 : 0), _key6 = 1; _key6 < _len6; _key6++) {
-    args[_key6 - 1] = arguments[_key6];
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(xhr.responseText);
+        } else {
+          reject('fail');
+        }
+      }
+    };
+
+    xhr.send(paramString);
+  });
+};
+
+Promise.myResolve = function (param) {
+  if (param instanceof Promise) {
+    return param;
   }
 
-  var self = this;
-
-  var fBound = function fBound() {
-    for (var _len7 = arguments.length, innerArgs = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
-      innerArgs[_key7] = arguments[_key7];
+  return new Promise(function (resolve, reject) {
+    if (_typeof(param) !== 'object') {
+      resolve(param);
     }
 
-    self.apply(this instanceof fBound ? this : context, args.concat(args, innerArgs));
-  };
-
-  fBound.prototype = Object.create(this.prototype);
+    if (param.then && typeof param.then === 'function') {
+      param.then(resolve, reject);
+    }
+  });
 };
+
+Promise.reject = function (params) {
+  return new Promise(function (resolve, reject) {
+    reject(param);
+  });
+}; // 在promise结束时，无论结果是FULFILLED或者是rejected，都会执行回调函数
+
+
+Promise["finally"] = function (cb) {
+  // this指向当前Promise实例
+  return this.then(function (res) {
+    return Promise.resolve(cb()).then(function () {
+      return res;
+    });
+  }, function (err) {
+    return Promise.resolve(cb()).then(function () {
+      return err;
+    });
+  });
+};
+
+Promise.all = function (promises) {
+  return new Promise(function (resolve, reject) {
+    var len = promises.length;
+    var resArr = [];
+
+    for (var i = 0; i < len; i++) {
+      Promise.resolve(promises[i]).then(function (res) {
+        resArr.push(res);
+
+        if (resArr.length === len) {
+          resolve(resArr);
+        }
+      })["catch"](function (err) {
+        reject(err);
+      });
+    }
+  });
+};
+
+Promise.race = function (promises) {
+  return new Promise(function (resolve, reject) {
+    for (var i = 0; i < len; i++) {
+      Promise.resolve(promises[i]).then(function (res) {
+        resolve(res);
+        return;
+      })["catch"](function (err) {
+        reject(err);
+        return;
+      });
+    }
+  });
+};
+
+Promise.allSettled = function (promises) {
+  return new Promise(function (resolve, reject) {
+    var len = promises.length;
+    var resArr = [];
+
+    var checkIsEnd = function checkIsEnd() {
+      if (resArr.length === len) {
+        resolve(resArr);
+      }
+    };
+
+    for (var i = 0; i < len; i++) {
+      Promise.resolve(promises[i]).then(function (res) {
+        resArr.push({
+          state: 'fulfilled',
+          value: res
+        });
+        checkIsEnd();
+      }, function (err) {
+        resArr.push({
+          state: 'rejected',
+          value: err
+        });
+        checkIsEnd();
+      });
+    }
+  });
+};
+
+var Status = {
+  Pending: "PENDING",
+  Fulfilled: "FULFILLED",
+  Rejected: "REJECTED"
+};
+
+var MyPromise =
+/*#__PURE__*/
+function () {
+  function MyPromise(handler) {
+    _classCallCheck(this, MyPromise);
+
+    this.status = Status.Pending;
+    this.value = undefined;
+    this.successCallback = [];
+    this.failedCallback = [];
+
+    try {
+      handler(this.resolve.bind(this), this.reject.bind(this));
+    } catch (e) {
+      this.reject(e);
+    }
+  }
+
+  _createClass(MyPromise, [{
+    key: "resolve",
+    value: function resolve(res) {
+      if (this.status === Status.Pending) {
+        this.status = Status.Fulfilled;
+        this.value = res;
+        this.successCallback.forEach(function (func) {
+          func(res);
+        });
+      }
+    }
+  }, {
+    key: "reject",
+    value: function reject(err) {
+      if (this.status === Status.Pending) {
+        this.status = Status.Rejected;
+        this.value = err;
+        this.failedCallback.forEach(function (func) {
+          func(err);
+        });
+      }
+    }
+  }, {
+    key: "then",
+    value: function then(onFulfilled, onRejected) {
+      var _this = this;
+
+      onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (v) {
+        return v;
+      };
+      onRejected = typeof onFulfilled === 'function' ? onFulfilled : function (r) {
+        throw r;
+      };
+      var value = this.value,
+          status = this.status;
+      return new Promise(function (resolveNext, rejectNext) {
+        if (status === Status.Pending) {
+          _this.failedCallback.push(resolveNewPromise);
+
+          _this.successCallback.push(rejectNewPromise);
+        }
+
+        if (status === Status.Fulfilled) {
+          resolveNewPromise(value);
+        }
+
+        if (status === Status.Rejected) {
+          rejectNewPromise(value);
+        } // 前一个promise成功时执行的函数
+
+
+        var resolveNewPromise = function resolveNewPromise(value) {
+          try {
+            var result = onFulfilled(value); //承前
+
+            result instanceof Promise ? result.then(resolveNext, rejectNext) : resolveNext(value); // 启后
+          } catch (e) {
+            rejectNext(e);
+          }
+        };
+
+        var rejectNewPromise = function rejectNewPromise(reason) {};
+      });
+    }
+  }]);
+
+  return MyPromise;
+}();
 
 function Parent() {}
 
@@ -157,65 +257,6 @@ function Child() {
 Child.prototype = Object.create(Parent.prototype);
 Child.prototype.constructor = Child;
 
-var isObject = function isObject(target) {
-  return (_typeof(target) === 'object' || typeof target === 'function') && target !== null;
-};
-
-var getType = function getType(tar) {
-  return Object.prototype.toString.call(tar);
-};
-
-var keepCtor = function keepCtor(target, type) {
-  var ctor = target.constructor;
-
-  switch (type) {
-    case Type.functionType:
-      return handleCpFuntion(target);
-
-    case Type.regType:
-      return handleCpReg();
-
-    default:
-      return new ctor();
-  }
-};
-
-var handleCpFuntion = function handleCpFuntion(func) {
-  if (!func.prototype) {
-    return func;
-  }
-
-  var funcString = func.toString();
-  var paramReg = /(?<=\s\().+(?=\)\s+{)/;
-  var bodyReg = /(?<={)(.|\n|\r)+(?=})/m;
-  var params = funcString.exec(paramReg);
-  var body = funcString.exec(bodyReg);
-
-  if (!body) {
-    return function () {};
-  }
-
-  if (params) {
-    var paraArr = params[0].split(',');
-    return _construct(Function, _toConsumableArray(paraArr).concat([body[0]]));
-  }
-
-  return new Function(body[0]);
-};
-
-var handleCpReg = function handleCpReg(target) {
-  var source = target.source,
-      flags = target.flags;
-  return new target.constructor(source, flags);
-};
-
-var Type = {
-  mapType: '[object Map]',
-  setType: '[object Set]',
-  functionType: '',
-  regType: ''
-};
-
 var deepClone = function deepClone(target) {
   var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new WeakMap();
 
@@ -224,55 +265,109 @@ var deepClone = function deepClone(target) {
   }
 
   var type = getType(target);
-  var newTarget = keepCtor(target, type);
+  var newtarget = null;
 
-  if (map.get(target)) {
+  if (map.get(tagret)) {
     return target;
   }
 
   map.set(target, true);
 
-  if (type === Type.mapType) {
-    target.forEach(function (item, key) {
-      newTarget.set(deepClone(key, map), deepClone(item, map));
+  if (type === setTag) {
+    target.forEach(function (item) {
+      newtarget.add(deepClone(item, map));
     });
   }
 
-  if (type === Type.setType) {
-    target.forEach(function (item) {
-      newTarget.add(deepClone(item, map));
+  if (type === mapTag) {
+    target.forEach(function (item, key) {
+      newtarget.set(deepClone(key, map), deepClone(item, map));
     });
   }
 
   for (var prop in target) {
     if (target.hasOwnProperty(prop)) {
-      newTarget[prop] = deepClone(target[prop], map);
+      newtarget[prop] = deepClone(target[prop], map);
     }
   }
 
-  return newTarget;
-}; // 2024-6-4:  4, 5, 7 -------接近2h
-
-
-Promise.all = function (promises) {
-  return new Promise(function (resolve, reject) {
-    var len = promises.length;
-    var resArr = [];
-
-    var _loop = function _loop(i) {
-      Promise.resolve(promises[i]).then(function (res) {
-        resArr[i] = res;
-
-        if (resArr.length === len) {
-          resolve(resArr);
-        }
-      })["catch"](function (err) {
-        reject(err);
-      });
-    };
-
-    for (var i = 0; i < len; i++) {
-      _loop(i);
-    }
-  });
+  return newtarget;
 };
+
+var handleCloneFunction = function handleCloneFunction(func) {
+  if (!func.prototype) {
+    return func; // 而箭头函数不是任何类的实例，每次调用都是不一样的引用
+  }
+
+  var funcString = func.toString();
+  var paramReg = /(?<=\s*\().+(?=\)\s+\{)/;
+  var bodyReg = /(?<=\{)(.|\n|\r)+(?=\})/m;
+  var params = paramReg.exec(funcString);
+  var body = bodyReg.exec(funcString);
+
+  if (!body) {
+    return function () {};
+  }
+
+  if (params) {
+    var paramsArr = params[0].split(',');
+    return _construct(Function, _toConsumableArray(paramsArr).concat([body[0]]));
+  }
+
+  return new Function(body[0]);
+};
+
+Function.prototype.myCall = function () {
+  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
+  var key = Symbol();
+  context[key] = _this2;
+
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+
+  var res = context[key].apply(context, args);
+  delete context[key];
+  return res;
+};
+
+Function.prototype.myBind = function () {
+  var context = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window;
+
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
+  }
+
+  var self = this;
+
+  var fBound = function fBound() {
+    for (var _len3 = arguments.length, innerArgs = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      innerArgs[_key3] = arguments[_key3];
+    }
+
+    return self.apply(this instanceof fBound ? this : context, args.concat(innerArgs));
+  };
+
+  fBound.prototype = Object.create(this.prototype);
+  return fBound;
+};
+
+function mynew(constructor) {
+  var newObj = Object.create(constructor.prototype);
+
+  for (var _len4 = arguments.length, args = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+    args[_key4 - 1] = arguments[_key4];
+  }
+
+  var res = constructor.apply.apply(constructor, [newObj].concat(args));
+  return _typeof(res) === 'object' ? res : newObj;
+}
+/**
+ * 2024-6-4:  4, 5, 7 -------接近2h
+ */
+
+/**
+ * 2024-6-5: 
+ *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
+ *  4
+ */
