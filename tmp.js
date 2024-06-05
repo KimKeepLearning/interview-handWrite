@@ -293,3 +293,14 @@ function mynew(constructor, ...args) {
  *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
  *  4
  */
+
+const curry = (func, prevArgs = []) => {
+  const len = func.length;
+  return (...nextArgs) => {
+    const curArgs = [...prevArgs, nextArgs];
+    if (curArgs.length === len) {
+      return func(...curArgs);
+    }
+    return curry(func, curArgs);
+  }
+}

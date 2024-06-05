@@ -371,3 +371,22 @@ function mynew(constructor) {
  *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
  *  4
  */
+
+
+var curry = function curry(func) {
+  var prevArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var len = func.length;
+  return function () {
+    for (var _len5 = arguments.length, nextArgs = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+      nextArgs[_key5] = arguments[_key5];
+    }
+
+    var curArgs = [].concat(_toConsumableArray(prevArgs), [nextArgs]);
+
+    if (curArgs.length === len) {
+      return func.apply(void 0, _toConsumableArray(curArgs));
+    }
+
+    return curry(func, curArgs);
+  };
+};
