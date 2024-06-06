@@ -197,6 +197,10 @@ function object() {
 const test = new object();
 console.log(test);
 
+const flatReduce = arr => {
+  return arr.reduce((prev, next) => prev.concat(Array.isArray(next) ? flatReduce(next) : next), [])
+}
+
 /**
  * 2024-6-4:  4, 5, 7 -------接近2h
  */

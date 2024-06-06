@@ -178,6 +178,12 @@ function object() {
 
 var test = new object();
 console.log(test);
+
+var flatReduce = function flatReduce(arr) {
+  return arr.reduce(function (prev, next) {
+    return prev.concat(Array.isArray(next) ? flatReduce(next) : next);
+  }, []);
+};
 /**
  * 2024-6-4:  4, 5, 7 -------接近2h
  */
