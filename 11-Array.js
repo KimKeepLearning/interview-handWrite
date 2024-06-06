@@ -1,7 +1,7 @@
 Array.prototype.myForEach = function (cb, context) {
   const self = this;
   for (let i = 0; i < self.length; i++) {
-    cb && cb.call(context, self[i], i);
+    cb && cb.call(context, self[i], i, self);
   }
 }
 
