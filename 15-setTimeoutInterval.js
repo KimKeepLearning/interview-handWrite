@@ -18,5 +18,4 @@ const setTimeoutMy = (callback, wait) => {
     clearInterval(timer);
     callback();
   }, wait);
-  return timer;
 }

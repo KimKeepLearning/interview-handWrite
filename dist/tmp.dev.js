@@ -1,188 +1,214 @@
 "use strict";
 
-// Array.prototype.forEach = function (cb, context) {
-//   const self = this;
-//   for (let i = 0; i < self.length; i++) {
-//     cb.call(context, self[i], i, self)
-//   }
-// }
-// Array.prototype.reduce = function (cb, initValue) {
-//   const self = this;
-//   const res = initValue ? initValue : self[0];
-//   const startIndex = initValue ? 0 : 1;
-//   for (let i = startIndex; i < self.length; i++) {
-//     res = cb(res, self[i], i, self)
-//   }
-//   return res;
-// }
-// const curry = (func, prevArgs = []) => {
-//   let arity = func.length;
-//   return (...nextArgs) => {
-//     const args = [...prevArgs, ...nextArgs];
-//     if (args.length === arity) {
-//       return func(...args);
-//     }
-//     return curry(func, args);
-//   }
-// }
-// const compose = (funcs) => {
-//   return funcs.reduce((f, g) => (...args) => f(g(...args)));
-// }
-// const Ready = 4
-// const Success = 200;
-// const Storage = 300;
-// const ajaxPromise = (url, method, paramString) => {
-//   return new Promise((resolve, reject) => {
-//     const xhr = new XMLHttpRequest();
-//     xhr.open(method, url);
-//     xhr.onreadystatechange = () => {
-//       if (xhr.readyState === Ready) {
-//         if (xhr.status >= Success && xhr.status < 300) {
-//           resolve(xhr.responseText);
-//         } else {
-//           reject('err');
-//         }
-//       }
-//     }
-//     xhr.send(paramString);
-//   })
-// }
-// Promise.resolve = function (param) {
-//   if (param instanceof Promise) {
-//     return param;
-//   }
-//   return new Promise((resolve, reject) => {
-//     if (param.then && typeof param.then === 'function') {
-//       param.then(resolve, reject);
-//       return;
-//     }
-//     resolve(param);
-//     return;
-//   });
-// }
-// Promise.reject = (param) => {
-//   return new Promise((resolve, reject) => {
-//     reject(param);
-//   })
-// } 
-// Promise.finally = function (cb) {
-//   return this.then(
-//     value => Promise.resolve(cb()).then(() => value),
-//     reason => Promise.resolve(cb()).then(() => { throw reason })
-//   )
-// }
-// Promise.all = (promises) => {
-//   const len = promises.length;
-//   let resArr = [];
-//   return new Promise((resolve, reject) => {
-//     for (let i = 0; i < len; i++) {
-//       Promise.resolve(promises[i]).then(res => {
-//         resArr.push(res);
-//         if (resArr.length === len) {
-//           resolve(resArr)
-//         }
-//       }).catch(err => {
-//         reject(err)
-//       })
-//     }
-//   })
-// }
-// // 完整的promise
-// const Status = {
-//   Pending: 'PENDING',
-//   Fulfilled: 'FULFILLED',
-//   Rejected: 'REJECTED',
-// }
-// class Promise {
-//   constructor(handler) {
-//     this.value = undefined;
-//     this.status = Status.Pending;
-//     this.successCb = [];
-//     this.failCb = [];
-//     try {
-//       handler(this.resolve.bind(this), this.reject.bind(this))
-//     } catch (e) {
-//       this.reject(e)
-//     }
-//   }
-//   resolve(res) {
-//     if (this.status !== Status.Pending) {
-//       return;
-//     }
-//     this.status = Status.Fulfilled;
-//     this.value = res;
-//     this.successCb.forEach(func => {
-//       func(res);
-//     });
-//   }
-//   then(onFulfilled, onRejected) {
-//     onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v
-//     const resolveNewPromise = function(value) {
-//       const res = onFulfilled(value);
-//       if (res instanceof Promise) {
-//         res.then(resolveNext, rejectNext);
-//         return;
-//       }
-//       resolveNext(value);
-//     }
-//     return new Promise((resolveNext, rejectNext) => {
-//       if (this.status === Status.Pending) {
-//         this.successCb.push();
-//         this.failCb.push();
-//       }
-//       if (this.status === Status.Fulfilled) {
-//         resolveNewPromise(this.value);
-//       }
-//     })
-//   }
-// }
-// function Parent() {
-// }
-// function Child() {
-//   Parent.call(this)
-// }
-// Child.prototype = Object.create(Parent.prototype);
-// Child.prototype.constructor = Child;
-// Function.prototype.call = function (context, ...args) {
-//   const self = this;
-//   const key = Symbol();
-//   context[key] = self;
-//   const res = context[key](...args);
-//   delete context[key]
-//   return res;
-// }
-// Function.prototype.bind = function (context, ...args) {
-//   const self = this;
-//   let fBound = function (...innerArgs) {
-//     return self.apply(
-//       this instanceof fBound ? this : context
-//       ,
-//       args.concat(innerArgs)
-//     )
-//   }
-//   fBound.prototype = Object.create(self.prototype);
-//   return fBound;
-// }
-// function myNew(contrcutor, ...args) {
-//   const newObj = Object.create(contrcutor.prototype);
-//   const res = constructor.call(newObj, ...args);
-//   return res ? res : newObj;
-// } 
-function object() {
-  this.prop1 = 1;
-  this.prop2 = 2;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var setIntervalMy = function setIntervalMy(func, wait) {
+  var timer = undefined;
+
+  function interval() {
+    func();
+    timer = setTimeoutMy(interval, wait);
+  }
+
+  timer = setTimeoutMy(interval, wait);
   return {
-    name: 21
+    clear: function clear() {
+      return clearTimeout(timer);
+    }
   };
-}
+};
 
-var test = new object();
-console.log(test);
+var setTimeoutMy = function setTimeoutMy(func, wait) {
+  var timer = undefined;
+  timer = setInterval(function () {
+    if (timer) {
+      clearInterval(timer);
+    }
 
-var flatReduce = function flatReduce(arr) {
-  return arr.reduce(function (prev, next) {
-    return prev.concat(Array.isArray(next) ? flatReduce(next) : next);
-  }, []);
+    func();
+  }, wait);
+};
+
+var create = function create(proto) {
+  function fn() {}
+
+  ;
+  fn.prototype = proto;
+  return new fn();
+};
+
+var freeze = function freeze(obj) {
+  if (_typeof(obj) !== 'object' || obj === null) {
+    return obj;
+  }
+
+  Object.seal(obj);
+
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      Object.defineProperty(obj, key, {
+        writable: false
+      });
+      freeze(obj[key]);
+    }
+  }
+};
+
+Array.prototype.reduceMy = function (cb, initvalue) {
+  var self = this;
+  var res = initvalue ? initvalue : self[0];
+  var start = initvalue ? 0 : 1;
+
+  for (var i = start; i < self.length; i++) {
+    res = cb(res, self[i], i, self);
+  }
+
+  return res;
+};
+
+Array.prototype.myMap = function (cb, thisArgs) {
+  var self = this;
+  var res = [];
+
+  for (var i = 0; i < self.length; i++) {
+    res[i] = cb.call(thisArgs, self[i], i, self);
+  }
+
+  return res;
+};
+
+var flat = function flat(arr) {
+  return arr.reduce(function (prev, cur) {
+    return prev.concat(Array.isArray(cur) ? flat(cur) : cur);
+  });
+};
+
+Array.myOf = function () {
+  return [].slice.call(arguments);
+};
+
+var curry = function curry(func) {
+  var prevArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var arity = func.length;
+  return function () {
+    for (var _len = arguments.length, nextArgs = new Array(_len), _key = 0; _key < _len; _key++) {
+      nextArgs[_key] = arguments[_key];
+    }
+
+    var args = [].concat(_toConsumableArray(prevArgs), nextArgs);
+
+    if (args.length === arity) {
+      func.apply(void 0, _toConsumableArray(args));
+    } else {
+      curry(func, args);
+    }
+  };
+};
+
+var compose = function compose() {
+  for (var _len2 = arguments.length, funcs = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    funcs[_key2] = arguments[_key2];
+  }
+
+  return funcs.reduce(function (f, g) {
+    return function () {
+      return f(g.apply(void 0, arguments));
+    };
+  });
+};
+
+Promise.allMy = function (promises) {
+  return new Promise(function (resolve, reject) {
+    var res = [];
+
+    for (var i = 0; i < promises.length; i++) {
+      Promise.resolve(promises[i]).then(function (v) {
+        res.push(v);
+
+        if (res.length === promises.length) {
+          resolve(res);
+        }
+      })["catch"](function (e) {
+        reject(e);
+      });
+    }
+  });
+};
+
+var Promise =
+/*#__PURE__*/
+function () {
+  function Promise() {
+    _classCallCheck(this, Promise);
+  }
+
+  _createClass(Promise, [{
+    key: "then",
+    value: function then(onFulfilled, onRejected) {
+      onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (v) {
+        return v;
+      };
+
+      if (this.status === 'pending') {
+        this.success.push(resolveNewPromise);
+      }
+
+      if (this.status === 'onFulfilled') {
+        resolveNewPromise(this.value);
+      }
+
+      var resolveNewPromise = function resolveNewPromise(value) {
+        return new Promise(function (reoslveNext, rejectNext) {
+          try {
+            var res = onFulfilled(value);
+
+            if (res instanceof Promise) {
+              res.then(reoslveNext, rejectNext);
+            } else {
+              reoslveNext(res);
+            }
+          } catch (e) {
+            rejectNext(e);
+          }
+        });
+      };
+    }
+  }]);
+
+  return Promise;
+}();
+
+Function.prototype.bind = function (context) {
+  for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+    args[_key3 - 1] = arguments[_key3];
+  }
+
+  var self = this;
+
+  var fBound = function fBound() {
+    for (var _len4 = arguments.length, innerArgs = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+      innerArgs[_key4] = arguments[_key4];
+    }
+
+    return self.apply(this instanceof fBound ? this : context, args.concat(innerArgs));
+  };
+
+  fBound.prototype = Object.create(this.prototype);
+  return fBound;
 };
 /**
  * 2024-6-4:  4, 5, 7 -------接近2h
@@ -198,4 +224,12 @@ var flatReduce = function flatReduce(arr) {
  * 2024-6-6:
  * 8. 完整的promise
  * 5. bind
+ */
+
+/**
+ * 2024-6-7:
+ * 15: setInterval
+ * 13: Object.freeze
+ * 10: curry
+ * 8: then
  */

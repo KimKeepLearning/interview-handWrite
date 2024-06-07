@@ -19,5 +19,5 @@ function freeze(obj) {
       freeze(obj[key]);
     }
   }
-
 }
+
