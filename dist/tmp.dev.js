@@ -16,44 +16,31 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+var setTimeoutMy = function setTimeoutMy(func, wait) {
+  var timer = undefined;
+  timer = setInterval(function () {
+    clearInterval(timer);
+    func();
+  }, wait);
+};
+
 var setIntervalMy = function setIntervalMy(func, wait) {
   var timer = undefined;
 
   function interval() {
     func();
-    timer = setTimeoutMy(interval, wait);
+    timer = setTimeout(interval, wait);
   }
 
-  timer = setTimeoutMy(interval, wait);
+  timer = setTimeout(interval, wait);
   return {
-    clear: function clear() {
-      return clearTimeout(timer);
-    }
+    clear: clearTimeout(timer)
   };
 };
 
-var setTimeoutMy = function setTimeoutMy(func, wait) {
-  var timer = undefined;
-  timer = setInterval(function () {
-    if (timer) {
-      clearInterval(timer);
-    }
-
-    func();
-  }, wait);
-};
-
-var create = function create(proto) {
-  function fn() {}
-
-  ;
-  fn.prototype = proto;
-  return new fn();
-};
-
-var freeze = function freeze(obj) {
+Object.freezeMy = function (obj) {
   if (_typeof(obj) !== 'object' || obj === null) {
-    return obj;
+    return;
   }
 
   Object.seal(obj);
@@ -63,42 +50,9 @@ var freeze = function freeze(obj) {
       Object.defineProperty(obj, key, {
         writable: false
       });
-      freeze(obj[key]);
+      freezeMy(obj[key]);
     }
   }
-};
-
-Array.prototype.reduceMy = function (cb, initvalue) {
-  var self = this;
-  var res = initvalue ? initvalue : self[0];
-  var start = initvalue ? 0 : 1;
-
-  for (var i = start; i < self.length; i++) {
-    res = cb(res, self[i], i, self);
-  }
-
-  return res;
-};
-
-Array.prototype.myMap = function (cb, thisArgs) {
-  var self = this;
-  var res = [];
-
-  for (var i = 0; i < self.length; i++) {
-    res[i] = cb.call(thisArgs, self[i], i, self);
-  }
-
-  return res;
-};
-
-var flat = function flat(arr) {
-  return arr.reduce(function (prev, cur) {
-    return prev.concat(Array.isArray(cur) ? flat(cur) : cur);
-  });
-};
-
-Array.myOf = function () {
-  return [].slice.call(arguments);
 };
 
 var curry = function curry(func) {
@@ -112,112 +66,82 @@ var curry = function curry(func) {
     var args = [].concat(_toConsumableArray(prevArgs), nextArgs);
 
     if (args.length === arity) {
-      func.apply(void 0, _toConsumableArray(args));
-    } else {
-      curry(func, args);
+      return func.apply(void 0, _toConsumableArray(args));
     }
+
+    return curry(func, args);
   };
 };
 
-var compose = function compose() {
-  for (var _len2 = arguments.length, funcs = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    funcs[_key2] = arguments[_key2];
-  }
-
-  return funcs.reduce(function (f, g) {
-    return function () {
-      return f(g.apply(void 0, arguments));
-    };
-  });
-};
-
-Promise.allMy = function (promises) {
-  return new Promise(function (resolve, reject) {
-    var res = [];
-
-    for (var i = 0; i < promises.length; i++) {
-      Promise.resolve(promises[i]).then(function (v) {
-        res.push(v);
-
-        if (res.length === promises.length) {
-          resolve(res);
-        }
-      })["catch"](function (e) {
-        reject(e);
-      });
-    }
-  });
-};
-
-var Promise =
+var PromiseMy =
 /*#__PURE__*/
 function () {
-  function Promise() {
-    _classCallCheck(this, Promise);
+  function PromiseMy(handler) {
+    _classCallCheck(this, PromiseMy);
+
+    this.value = undefined;
+    this.successCb = [];
+    this.failCb = [];
   }
 
-  _createClass(Promise, [{
+  _createClass(PromiseMy, [{
     key: "then",
     value: function then(onFulfilled, onRejected) {
+      var _this = this;
+
       onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (v) {
         return v;
       };
+      return new Promise(function (resolveNext, rejectNext) {
+        if (_this.status === 'pending') {
+          _this.successCb.push(reoslveNewPromise);
+        }
 
-      if (this.status === 'pending') {
-        this.success.push(resolveNewPromise);
-      }
+        if (_this.status === 'onFulfilled') {
+          reoslveNewPromise(_this.value);
+        }
 
-      if (this.status === 'onFulfilled') {
-        resolveNewPromise(this.value);
-      }
-
-      var resolveNewPromise = function resolveNewPromise(value) {
-        return new Promise(function (reoslveNext, rejectNext) {
+        var reoslveNewPromise = function reoslveNewPromise(value) {
           try {
             var res = onFulfilled(value);
 
             if (res instanceof Promise) {
-              res.then(reoslveNext, rejectNext);
+              res.then(resolveNext, rejectNext);
             } else {
-              reoslveNext(res);
+              resolveNext(res);
             }
-          } catch (e) {
-            rejectNext(e);
+          } catch (error) {
+            rejectNext(error);
           }
-        });
-      };
+        };
+      });
     }
   }]);
 
-  return Promise;
+  return PromiseMy;
 }();
 
-Function.prototype.bind = function (context) {
-  for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-    args[_key3 - 1] = arguments[_key3];
+var myNew = function myNew(constructor) {
+  var newObj = Object.create(constructor.prototype);
+
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
   }
 
-  var self = this;
-
-  var fBound = function fBound() {
-    for (var _len4 = arguments.length, innerArgs = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-      innerArgs[_key4] = arguments[_key4];
-    }
-
-    return self.apply(this instanceof fBound ? this : context, args.concat(innerArgs));
-  };
-
-  fBound.prototype = Object.create(this.prototype);
-  return fBound;
+  var res = constructor.apply(newObj, args);
+  return _typeof(res) === 'object' ? res : newObj;
 };
 /**
- * 2024-6-4:  4, 5, 7 -------接近2h
+ * 2024-6-8:
+ * √
  */
 
 /**
- * 2024-6-5: 
- *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
- *  4
+ * 2024-6-7:
+ * 15: setInterval
+ * 13: Object.freeze
+ * 10: curry
+ * 8: then
  */
 
 /**
@@ -227,9 +151,11 @@ Function.prototype.bind = function (context) {
  */
 
 /**
- * 2024-6-7:
- * 15: setInterval
- * 13: Object.freeze
- * 10: curry
- * 8: then
+ * 2024-6-5: 
+ *  8.1-resolve， 8.3-finally, 8.4-all 8.6-race
+ *  4
+ */
+
+/**
+ * 2024-6-4:  4, 5, 7 -------接近2h
  */
