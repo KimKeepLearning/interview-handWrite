@@ -1,5 +1,7 @@
 "use strict";
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 var creatSingleton = function () {
   var instance = null;
   return function (name) {
@@ -120,6 +122,17 @@ var concurrencyPromise = function concurrencyPromise(urls, max) {
       request();
     }
   });
+};
+
+var newMy = function newMy(cst) {
+  var newObj = Object.create(cst.prototype);
+
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+
+  var res = cst.apply(newObj, args);
+  return _typeof(res) === 'object' ? res : newObj;
 };
 /**
  * 2024-6-13

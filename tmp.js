@@ -102,6 +102,11 @@ const concurrencyPromise = (urls, max) => {
   })
 }
 
+const newMy = function (cst, ...args) {
+  const newObj = Object.create(cst.prototype);
+  const res = cst.apply(newObj, args);
+  return typeof res === 'object' ? res : newObj;
+}
 
 /**
  * 2024-6-13
@@ -117,7 +122,6 @@ const concurrencyPromise = (urls, max) => {
  * 6.正向预查和反向预查
  * 2. throttle
  */
-
 
 /**
  * 2024-6-8:
