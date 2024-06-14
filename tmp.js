@@ -1,135 +1,4 @@
-class LRUCache {
-  constructor(limit) {
-    this.limit = limit;
-    this.data = new Map();
-  }
-
-  set(key, value) {
-    const { limit, data } = this;
-    if (data.get(key)) {
-      data.delete(key);
-    }
-    data.set(key, value)
-    if (data.size > limit) {
-      const delVal = data.keys().next().value;
-      data.delete(delVal);
-    }
-  }
-
-  get(key) {
-    const { data } = this;
-    if (!data.has(key)) {
-      return null;
-    }
-    const val = data.get(key);
-    data.delete(key);
-    data.set(key, val);
-    return val;
-  }
-
-}
-
-const setTimeOut = (func, wait) => {
-  let timer = 0;
-  timer = setInterval(() => {
-    clearInterval(timer);
-    func();
-  }, wait);
-}
-
-const setInterval = (func, wait) => {
-  let timer = 0;
-  function interval() {
-    func();
-    timer = setTimeout(interval, wait);
-  }
-  timer = setTimeout(interval, wait);
-  return {
-    clear: clearTimeout(timer)
-  }
-}
-
-class EventEmitter {
-  constructor() {
-    this.events = {};
-  }
-
-  on(eventName, callback) {
-    if (!this.events[eventName]) {
-      this.events[eventName] = [];
-    }
-    this.events[eventName].push(callback);
-  }
-  emit(eventName, ...args) {
-    this.events[eventName].forEach(func => func(...args))
-  }
-  off(eventName, callback) {
-    this.events[eventName] = this.events[eventName].filter(func => func != callback && func.init != callback)
-  }
-  once(eventName, callback) {
-    function one() {
-      callback();
-      this.off(eventName, one)
-    }
-    one.init = callback;
-    this.on(eventName, one);
-  }
-}
-
-class Subject{
-  constructor(name) {
-    this.name = name;
-    this.ob = [];
-  }
-
-  attach(ob) {
-    this.ob.push(ob);
-  }
-
-  changeState(name) {
-    this.name = name;
-    this.ob.forEach(obj => obj.update(this));
-  }
-}
-
-const createSingleton = (function () {
-  let instance;
-  return function (name) {
-    if (instance) {
-      return instance;
-    }
-    this.name = name;
-    instance = this;
-    return instance;
-  }
-})()
-
-const strategies = {
-  straA() {
-    return {
-      text: '',
-      bg: '',
-      color: ''
-    }
-  },
-  straB() {
-    return {
-      text: '',
-      bg: '',
-      color: ''
-    }
-  },
-  straC() {
-    return {
-      text: '',
-      bg: '',
-      color: ''
-    }
-  }
-}
-strategies[straA]();
-
-const createSingleton1 = (function () {
+const creatSingleton = (function () {
   let instance = null;
   return function (name) {
     if (instance) {
@@ -141,135 +10,77 @@ const createSingleton1 = (function () {
   }
 })()
 
-const curry = (func, preArgs = []) => {
-  const arity = func.length;
-  return (...nextArgs) => {
-    const args = [...preArgs, ...nextArgs];
-    if (args.length === arity) {
-      return func(...args);
-    }
-    return curry(func, args);
-  }
-}
-
-const lazyLoad = () => {
-  const imgs = document.querySelectorAll('img');
-  for (let img of imgs) {
-    const src = img.dataset.src;
-    if (!src) {
-      continue;
-    }
-    if (isVisible(img)) {
-      img.src = src;
-      img.dataset.src = ''
-    }
-  }
-}
-const isVisible = (node) => {
-  const windowHeight = document.documentElement.clientHeight;
-  const box = node.getBoundingClientRect();
-  const { top, bottom } = box;
-  const topVisible = top > 0 && top < windowHeight;
-  const bottomVis = bottom > 0 && bottom < windowHeight;
-  return topVisible || bottomVis;
-}
-
-function red() {
-    console.log('red');
-}
-function green() {
-    console.log('green');
-}
-function yellow() {
-    console.log('yellow');
-}
- 
-//红灯3秒亮一次，
-//黄灯2秒亮一次，
-//绿灯1秒亮一次；
-//如何让三个灯不断交替重复亮灯？（用Promise实现）三个亮灯函数已经存在：
-
 const light = (func, wait) => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve()
-      func()
-    }, wait)
+    setTimeout(() => { 
+      func();
+      resolve();
+     }, wait);
   })
-};
-
+}
 const step = () => {
   Promise.resolve().then(() => {
-    return light(red, 3000)
+    return light(red, 3000);
   }).then(() => {
-    return light(green, 2000)
+    return light(green, 2000);
   }).then(() => {
-    return light(yellow, 1000)
+    return light(yellow, 1000);
   }).then(() => {
-    return step();
+    step();
   })
 }
 step();
-
-const sleep = (time) => {
-  return new Promise((reoslve) => {
-    setTimeOut(() => {
-      resolve()
-    }, time)
+Promise.resolveMy = (param) => {
+  if (param instanceof Promise) {
+    return param;
+  }
+  return new Promise((resolve, reject) => {
+    if (param.then && typeof param.then === 'function') {
+      param.then(resolve, reject);
+    } else {
+      resolve(param)
+    }
   })
 }
 
-class PromiseQueue {
-  constructor(limit) {
-    this.limit = limit;
-    this.queue = [];
-    this.runCounts = 0;
-  }
-
-  add(time, order) {
-    const createPromise = () => {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          console.log(order);
-          resolve();
-        }, time)
+Promise.all = (promises) => {
+  return new Promise((resolve, reject) => {
+    let len = promises.length;
+    const res = [];
+    let completed = 0;
+    if (!res.length) {
+      resolve(res);
+      return;
+    }
+    for (let i = 0; i < len; i++) {
+      Promise.resolve(promises[i]).then(val => {
+        res[i] = val;
+        completed++;
+        if (completed === len) {
+          resolve(res);
+        }
+      }).catch(e => {
+        reject(e);
       })
     }
-    this.queue.push(createPromise)
-  }
-
-  run() {
-    for (let i = 0; i < this.limit; i++) {
-      this.request();
-    }
-  }
-
-  request() {
-    if (!this.queue.length || this.runCounts > this.limit) {
-      return;
-    }
-    this.queue.shift()().then(() => {
-      this.runCounts--;
-      this.request();
-    })
-  }
-
+  })
 }
 
-const concurrencyRequest = (urls, max) => {
+const concurrencyPromise = (urls, max) => {
   return new Promise((resolve, reject) => {
-    const total = urls.length;
-    let res = [];
+    const len = urls.length;
     let completed = 0;
     let current = 0
-    if (!total) {
-      resolve([]);
+    const res = [];
+    if (!len) {
+      resolve(res);
       return;
     }
+   
     const request = () => {
       let i = current;
       current++;
-      if (i >= total) {
+      if (i >= len) {
         return;
       }
       fetch(urls[i]).then(val => {
@@ -278,19 +89,20 @@ const concurrencyRequest = (urls, max) => {
         res[i] = err;
       }).finally(() => {
         completed++;
-        if (completed >= total) {
+        if (completed >= len) {
           resolve(res);
           return;
         }
         request();
       })
     }
-    const times = Math.min(total, max);
-    while (current < times) {
-      request();
-    } 
+    while (current <= Math.min(max, urls.length)) {
+      request()
+    }
   })
 }
+
+
 /**
  * 2024-6-13
  * 单例模式
