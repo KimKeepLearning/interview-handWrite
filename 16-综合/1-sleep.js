@@ -1,5 +1,5 @@
 const sleep = time => {
-  return new Promise((resolve) = setTimeout(resolve, time));
+  return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 sleep(1000).then(() => {

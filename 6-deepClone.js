@@ -51,7 +51,7 @@ const canTraverse = {
   '[object Object]': true,
 };
 const keepCtor = (target, type) => {
-  const ctor = target.contructor;
+  const ctor = target.constructor;
   switch (type) {
     case Tag.regexpTag: 
       return handleRegExp(target);

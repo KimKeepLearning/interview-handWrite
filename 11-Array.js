@@ -44,6 +44,12 @@ Array.prototype.reduce = function (cb, initValue) {
 const flatReduce = arr => {
   return arr.reduce((prev, next) => prev.concat(Array.isArray(next) ? flatArray(next) : next), [])
 }
+
+// 如果需要支持层级
+const flatReduceControl = (arr, depth = 1) => {
+  return arr.reduce((prev, next) => prev.concat(Array.isArray(next) && depth >= 0 ? flatArray(next, depth - 1) : next), [])
+}
+
 // ? 2- regexp
 const flatReg = arr => {
   const string = arr.toString();

@@ -1,16 +1,47 @@
-/**
- *  addTask(1000,"1");
-    addTask(500,"2");
-    addTask(300,"3");
-    addTask(400,"4");
-    的输出顺序是：2 3 1 4
-
-    整个的完整执行流程：
-
-    一开始1、2两个任务开始执行
-    500ms时，2任务执行完毕，输出2，任务3开始执行
-    800ms时，3任务执行完毕，输出3，任务4开始执行
-    1000ms时，1任务执行完毕，输出1，此时只剩下4任务在执行
-    1200ms时，4任务执行完毕，输出4
- */
 "use strict";
+
+var concurrencyRequest = function concurrencyRequest(urls, maxNum) {
+  return new Promise(function (resolve) {
+    if (!urls.length) {
+      resolve([]);
+      return;
+    }
+
+    var results = [];
+    var current = 0; // 下一个请求的下标
+
+    var completed = 0; // 当前请求完成的数量
+
+    var total = urls.length; // 发送请求
+
+    var request = function request() {
+      var progress = current;
+      current++;
+
+      if (progress >= total) {
+        return;
+      }
+
+      fetch(urls[progress]).then(function (res) {
+        results[progress] = res;
+      })["catch"](function (e) {
+        results[progress] = e;
+      })["finally"](function () {
+        completed++;
+
+        if (completed >= total) {
+          resolve(results);
+          return;
+        }
+
+        request();
+      });
+    };
+
+    var times = Math.min(maxNum, urls.length); // 开启第一次批量调用
+
+    while (current < times) {
+      request();
+    }
+  });
+};
